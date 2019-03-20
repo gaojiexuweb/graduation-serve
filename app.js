@@ -2,7 +2,9 @@
 //1:加载模块
 const express = require("express");
 const user = require('./routes/user')
-
+const order = require('./routes/order')
+const vehicle = require('./routes/vehicle')
+const price = require('./routes/price')
 //2:创建express对象
 var app = express();
 
@@ -24,7 +26,10 @@ app.use(express.static(__dirname+"/public"));
 app.listen(3000);
 
 //挂载到user下面
-app.use('/user',user)
+app.use('/user',user);
+app.use('/order',order)
+app.use('/vehicle',vehicle)
+app.use('/price',price)
 
 
 
