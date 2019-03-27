@@ -8,7 +8,7 @@ router.get('/getOrder',(req,res)=>{
     var page = req.query.page;
     var rows = req.query.rows;
     var start = (page-1)*rows;
-    var sql="SELECT * FROM `order` WHERE `status` = ? AND orderNumber LIKE '%"+orderNumber+"%'";
+    var sql="SELECT * FROM `order` WHERE deleteStatus = 0 AND `status` = ? AND orderNumber LIKE '%"+orderNumber+"%' ORDER BY id DESC";
     pool.query(sql,[status],(err,result)=>{
         err&&console.log(err);
         if(result.length>0){
@@ -18,4 +18,18 @@ router.get('/getOrder',(req,res)=>{
         }
       })
 })
+// 订单  删除
+router.get('/orderDelete',(req,res)=>{
+  var id = req.query.id;
+  var sql=" UPDATE `order` SET deleteStatus = 1 WHERE id = ?";
+  pool.query(sql,[id],(err,result)=>{
+      err&&console.log(err);
+      if(result.affectedRows>0){
+          res.send(JSON.stringify({success:true,message:"删除成功!"}));
+      }else{
+        res.send(JSON.stringify({success:false,message:"删除失败!"}));
+      }
+    })
+})
+
 module.exports = router
