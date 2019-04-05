@@ -17,6 +17,19 @@ router.get('/getPrice',(req,res)=>{
         }
       })
 })
+// 价格查询
+//1.获取价格列表
+router.get('/CPrice',(req,res)=>{
+  var sql="SELECT * FROM price WHERE deleteStatus = 0 ORDER BY id DESC";
+  pool.query(sql,[],(err,result)=>{
+      err&&console.log(err);
+      if(result.length>0){
+        res.send(JSON.stringify({records:result.length,rows:result,success:true}));
+      }else{
+        res.send(JSON.stringify({code:0,msg:"没有查询到数据!",rows:[],success:false}));
+      }
+    })
+})
 // 新增价格
 router.get('/add',(req,res)=>{
     console.log(req.query)
@@ -119,8 +132,9 @@ router.get('/goods',(req,res)=>{
   var pickNumber = req.query.pickNumber;
   var lineArrangementId = req.query.lineArrangementId;
   var status = req.query.status;
-  var sql="UPDATE `order` SET responsible = ? , servicePhone = ? , vehicleNumber = ? , pickNumber = ? , lineArrangementId = ? , status = ? WHERE id = ?";
-  pool.query(sql,[responsible,servicePhone,vehicleNumber,pickNumber,lineArrangementId,status,id],(err,result)=>{
+  var orderMoney = req.query.orderMoney;
+  var sql="UPDATE `order` SET responsible = ? , orderMoney = ?  , servicePhone = ? , vehicleNumber = ? , pickNumber = ? , lineArrangementId = ? , status = ? WHERE id = ?";
+  pool.query(sql,[responsible,orderMoney,servicePhone,vehicleNumber,pickNumber,lineArrangementId,status,id],(err,result)=>{
       err&&console.log(err);
       if(result.affectedRows>0){
           res.send(JSON.stringify({code:1,msg:"数据插入成功!",success:true}));

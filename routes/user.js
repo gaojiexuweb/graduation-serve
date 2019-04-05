@@ -35,23 +35,36 @@ router.get('/register',(req,res)=>{
         }
     })
 })
-//3.用户查询
-// router.get('/select',(req,res)=>{
-//     var $uname = req.query.uname;
-//     if(!$uname){
-//         res.send('用户编号不能为空')
-//     }
-//     var sql = 'select * from xz_user where uname = ?'
-//     pool.query(sql,$uname,(err,result)=>{
-//         if(err) throw err
-//         if(result.length>0){
-//             console.log(result)
-//             res.send('查询成功')
-//             res.end()
-//         }else{
-//             res.send('没有该用户')
-//             res.end()
-//         }
-//     })
-// })
+// 保存信息
+router.get('/info',(req,res)=>{
+  console.log(req.query)
+  var user_name = req.query.username;
+  var user_sex = req.query.sex;
+  var user_phone = req.query.phone;
+  var user_age = req.query.age;
+  var sql="UPDATE user_login SET user_sex = ? , user_phone = ? , user_age = ? WHERE user_name = ?";
+  pool.query(sql,[user_sex,user_phone,user_age,user_name],(err,result)=>{
+      err&&console.log(err);
+      if(result.affectedRows>0){
+          res.send(JSON.stringify({code:1,msg:"数据更新成功!"}));
+      }else{
+        res.send(JSON.stringify({code:0,msg:"数据更新失败!"}));
+      }
+    })
+})
+// 信息查询
+router.get('/tips',(req,res)=>{
+  var user_name = req.query.username;
+  console.log(req.query)
+  var sql="select * from user_login where user_name=?";
+  pool.query(sql,[user_name],(err,result)=>{
+      err&&console.log(err);
+      console.log(result)
+      if(result.length>0){
+        res.send(JSON.stringify({records:result.length,rows:result,success:true}));
+      }else{
+        res.send(JSON.stringify({code:0,msg:"没有查询到数据!",rows:[],success:false}));
+      }
+    })
+})
 module.exports = router
